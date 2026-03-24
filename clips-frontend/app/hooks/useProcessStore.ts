@@ -11,6 +11,8 @@ export interface ProcessState {
   status: ProcessStatus;
   startedAt: number | null;
   completedAt: number | null;
+  momentsFound: number;
+  estimatedSecondsRemaining: number | null;
 }
 
 const STORAGE_KEY = "clips_process_state";
@@ -22,6 +24,8 @@ const defaultState: ProcessState = {
   status: "idle",
   startedAt: null,
   completedAt: null,
+  momentsFound: 0,
+  estimatedSecondsRemaining: null,
 };
 
 function loadFromStorage(): ProcessState {
@@ -66,6 +70,8 @@ export function useProcessStore() {
       status: "processing",
       startedAt: Date.now(),
       completedAt: null,
+      momentsFound: 0,
+      estimatedSecondsRemaining: null,
     };
     saveToStorage(next);
     setProcessState(next);
