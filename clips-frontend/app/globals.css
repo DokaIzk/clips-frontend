@@ -1,8 +1,8 @@
+
 @import "tailwindcss";
 @import "./styles/bento-grid.css";
 
 :root {
-
   --background: #050505;
   --foreground: #f5f7fb;
   --page-background: #050505;
@@ -15,45 +15,43 @@
   --status-processing-text: #14f1b1;
   --status-completed-bg: #23252b;
   --status-completed-text: #98a0af;
-	--background: #ffffff;
-	--foreground: #171717;
-
+  --background: #ffffff;
+  --foreground: #171717;
 }
 
 @theme inline {
-	--color-background: var(--background);
-	--color-foreground: var(--foreground);
-	--font-sans: var(--font-geist-sans);
-	--font-mono: var(--font-geist-mono);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-inter: var(--font-inter);
 }
 
 @media (prefers-color-scheme: dark) {
-
   :root {
     --background: #050505;
     --foreground: #f5f7fb;
   }
 
-	:root {
-		--background: #0a0a0a;
-		--foreground: #ededed;
-	}
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
 }
 
 @keyframes stat-in {
-	from {
-		opacity: 0;
-		transform: translateY(10px);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-stat-in {
-	animation: stat-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
-
+  animation: stat-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 * {
@@ -65,7 +63,6 @@ html {
 }
 
 body {
-
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
@@ -111,7 +108,7 @@ body {
     font-size: 1.875rem; /* 30px */
     line-height: 2.25rem; /* 36px */
   }
-  
+
   /* Ensure glassmorphism cards maintain integrity on mobile */
   .backdrop-blur-xl,
   .backdrop-blur-lg,
@@ -130,3 +127,96 @@ body {
     line-height: 2.5rem; /* 40px */
   }
 }
+
+@keyframes breathe {
+  0%,
+  100% {
+    box-shadow:
+      0 0 28px 10px rgba(0, 255, 136, 0.28),
+      0 0 60px 22px rgba(0, 255, 136, 0.14),
+      0 0 110px 44px rgba(0, 255, 136, 0.06);
+  }
+  50% {
+    box-shadow:
+      0 0 40px 16px rgba(0, 255, 136, 0.52),
+      0 0 85px 34px rgba(0, 255, 136, 0.26),
+      0 0 155px 65px rgba(0, 255, 136, 0.11);
+  }
+}
+
+/* ── Gentle float for the icon cluster ── */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* ── Per-star staggered twinkle ── */
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  45% {
+    opacity: 0.5;
+    transform: scale(0.86);
+  }
+  72% {
+    opacity: 0.9;
+    transform: scale(1.07);
+  }
+}
+
+/* ── Fade-up entrance ── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.glow-ring {
+  animation: breathe 2.8s ease-in-out infinite;
+  will-change: box-shadow;
+}
+.icon-float {
+  animation: float 2.8s ease-in-out infinite;
+  will-change: transform;
+}
+
+.star-big {
+  animation: twinkle 2.6s ease-in-out infinite 0s;
+  will-change: transform, opacity;
+}
+.star-sm {
+  animation: twinkle 2.6s ease-in-out infinite 0.55s;
+  will-change: transform, opacity;
+}
+.star-dot {
+  animation: twinkle 2.6s ease-in-out infinite 1.05s;
+  will-change: transform, opacity;
+}
+.star-mid {
+  animation: twinkle 2.6s ease-in-out infinite 1.55s;
+  will-change: transform, opacity;
+}
+
+.fade-up-1 {
+  animation: fadeUp 0.72s cubic-bezier(0.22, 0.68, 0, 1.18) 0.1s both;
+}
+.fade-up-2 {
+  animation: fadeUp 0.72s cubic-bezier(0.22, 0.68, 0, 1.18) 0.34s both;
+}
+.fade-up-3 {
+  animation: fadeUp 0.72s cubic-bezier(0.22, 0.68, 0, 1.18) 0.54s both;
+}
+
