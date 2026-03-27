@@ -4,7 +4,7 @@ import React from "react";
 import { Check } from "lucide-react";
 
 interface SocialAccountCardProps {
-  platform: "tiktok" | "instagram" | "youtube";
+  platform: "tiktok" | "instagram" | "youtube" | "twitch";
   label: string;
   subtext: string;
   icon?: React.ReactNode;
