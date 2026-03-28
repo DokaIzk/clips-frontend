@@ -19,11 +19,12 @@ export default function WalletConnect() {
   const connectPhantom = useCallback(async () => {
     try {
       setLoading("phantom");
-      const provider = (window as unknown as Record<string, unknown>)
-        .solana as {
-        isPhantom?: boolean;
-        connect: () => Promise<{ publicKey: { toString: () => string } }>;
-      } | undefined;
+      const provider = (window as unknown as Record<string, unknown>).solana as
+        | {
+            isPhantom?: boolean;
+            connect: () => Promise<{ publicKey: { toString: () => string } }>;
+          }
+        | undefined;
 
       if (!provider?.isPhantom) {
         window.open("https://phantom.app/", "_blank");
@@ -48,10 +49,12 @@ export default function WalletConnect() {
     try {
       setLoading("metamask");
       const ethereum = (window as unknown as Record<string, unknown>)
-        .ethereum as {
-        isMetaMask?: boolean;
-        request: (args: { method: string }) => Promise<string[]>;
-      } | undefined;
+        .ethereum as
+        | {
+            isMetaMask?: boolean;
+            request: (args: { method: string }) => Promise<string[]>;
+          }
+        | undefined;
 
       if (!ethereum?.isMetaMask) {
         window.open("https://metamask.io/download/", "_blank");
@@ -76,16 +79,16 @@ export default function WalletConnect() {
   }, []);
 
   return (
-    <div className="w-full max-w-2xl rounded-2xl p-8 bg-[var(--card-background)] border border-[var(--border-color)]">
-      <div className="flex items-center gap-3 mb-8">
+    <div className="w-full max-w-2xl rounded-2xl p-6 sm:p-8 bg-[var(--card-background)] border border-[var(--border-color)]">
+      <div className="flex items-center gap-3 mb-6 sm:mb-8">
         <div className="p-2 rounded-lg bg-[var(--brand-primary)]/10">
           <Wallet size={20} className="text-[var(--brand-primary)]" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-white tracking-tight">
+          <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight">
             Wallet Integration
           </h2>
-          <p className="text-sm text-[var(--muted-text)]">
+          <p className="text-xs sm:text-sm text-[var(--muted-text)]">
             Connect your wallets to manage your crypto assets.
           </p>
         </div>
@@ -102,8 +105,8 @@ export default function WalletConnect() {
             loading === "phantom"
               ? "loading"
               : wallets.phantom.connected
-              ? "connected"
-              : "disconnected"
+                ? "connected"
+                : "disconnected"
           }
           address={wallets.phantom.address}
           onConnect={connectPhantom}
@@ -119,15 +122,15 @@ export default function WalletConnect() {
             loading === "metamask"
               ? "loading"
               : wallets.metamask.connected
-              ? "connected"
-              : "disconnected"
+                ? "connected"
+                : "disconnected"
           }
           address={wallets.metamask.address}
           onConnect={connectMetaMask}
         />
       </div>
-      
-      <div className="mt-8 pt-6 border-t border-[var(--border-color)]">
+
+      <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-[var(--border-color)]">
         <p className="text-xs text-[var(--muted-text)] text-center">
           Secure wallet connection powered by Web3.js and Ethers.js
         </p>
@@ -135,4 +138,3 @@ export default function WalletConnect() {
     </div>
   );
 }
-

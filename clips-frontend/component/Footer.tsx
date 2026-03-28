@@ -53,7 +53,7 @@ export default function Footer() {
           </span>
         </div>
 
-        <div className="flex items-center gap-6">
+        <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
           {LEGAL_ITEMS.map((item) => (
             <Link
               key={item.label}
@@ -64,14 +64,19 @@ export default function Footer() {
                 "transition-colors duration-150",
               ].join(" ")}
               target={item.href.startsWith("http") ? "_blank" : undefined}
-              rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
+              rel={
+                item.href.startsWith("http") ? "noopener noreferrer" : undefined
+              }
             >
               {item.label}
             </Link>
           ))}
         </div>
 
-        <nav aria-label="Partner platforms" className="flex items-center gap-6">
+        <nav
+          aria-label="Partner platforms"
+          className="flex flex-wrap items-center justify-center gap-4 sm:gap-6"
+        >
           {PLATFORM_ITEMS.map((item) => (
             <Link
               key={item.label}
@@ -79,7 +84,9 @@ export default function Footer() {
               aria-label={item.label}
               className="grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
               target={item.href.startsWith("http") ? "_blank" : undefined}
-              rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
+              rel={
+                item.href.startsWith("http") ? "noopener noreferrer" : undefined
+              }
             >
               <item.icon aria-hidden />
             </Link>
