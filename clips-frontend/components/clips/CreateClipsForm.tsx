@@ -9,6 +9,7 @@ import {
   Check, 
   Info 
 } from "lucide-react";
+import Switch from "../Switch";
 
 export default function CreateClipsForm() {
   const router = useRouter();
@@ -134,23 +135,14 @@ export default function CreateClipsForm() {
               <p className="text-[14px] font-bold text-white group-hover/toggle:text-brand transition-colors">Auto-generate clips</p>
               <p className="text-[11px] font-medium text-[#5A6F65]">Extract 50–200 viral moments</p>
             </div>
-            <button 
-              onClick={() => setAutoGenerate(!autoGenerate)}
-              className={`w-12 h-6 rounded-full relative transition-all duration-300 ${
-                autoGenerate ? "bg-brand" : "bg-[#1A221E]"
-              }`}
-            >
-              <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all duration-300 ${
-                autoGenerate ? "left-7" : "left-1"
-              }`} />
-            </button>
+            <Switch checked={autoGenerate} onChange={(v) => setAutoGenerate(v)} ariaLabel="Auto-generate clips" />
           </div>
         </div>
 
         {/* Footer Action Row */}
         <div className="pt-6 border-t border-white/[0.03] flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2.5 text-[#5A6F65]">
-            <Info className="w-4 h-4" />
+            <Info className="w-4 h-4 text-[#5A6F65]" />
             <span className="text-[13px] font-medium tracking-tight">Estimated processing time: <span className="text-white">4–6 minutes</span></span>
           </div>
           <button 
