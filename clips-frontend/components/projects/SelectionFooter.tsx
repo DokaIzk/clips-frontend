@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { 
   Send, 
   Trash2, 
@@ -25,6 +25,24 @@ export default function SelectionFooter({ count, onMint, isMinting = false }: Se
 
   return (
     <div className="w-full py-6 animate-in slide-in-from-bottom-5 fade-in duration-500 border-t border-white/5 bg-[#050505]/40 backdrop-blur-md">
+      {/* Error Banner */}
+      {postError && (
+        <div className="flex items-center gap-3 bg-red-500/10 border border-red-500/30 rounded-2xl px-5 py-3 mb-4 mx-1">
+          <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+          <p className="text-[13px] text-red-300 flex-1">{postError}</p>
+          {retryCount >= 3 && (
+            <span className="text-[11px] text-red-400/60 shrink-0">Try reconnecting your platform account.</span>
+          )}
+          <button
+            onClick={() => setPostError(null)}
+            className="text-red-400/60 hover:text-red-300 transition-colors shrink-0"
+            aria-label="Dismiss error"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
       <div className="relative bg-[#0B100E] border border-white/10 rounded-[32px] px-8 py-4 flex flex-col lg:flex-row items-center justify-between gap-6 w-full shadow-2xl">
         {/* Left: Selection Count */}
         <div className="flex items-center gap-4">

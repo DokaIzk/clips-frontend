@@ -63,6 +63,14 @@ function FieldError({ message }: { message?: string }) {
   );
 }
 
+function getMintErrorMessage(error: unknown): string {
+  const msg = error instanceof Error ? error.message : String(error);
+  if (msg === "WALLET_REJECTED") return "Transaction was rejected by your wallet. Please try again.";
+  if (msg === "NETWORK_ERROR") return "Network error — check your connection and retry.";
+  if (msg === "UPLOAD_FAILED") return "Metadata upload failed. The IPFS node may be busy. Please retry.";
+  return "Something went wrong while minting. Please try again.";
+}
+
 export default function MintConfigForm({ onSubmit }: MintConfigFormProps) {
   const [form, setForm] = useState<MintFormData>({
     collectionName: "",
@@ -74,6 +82,8 @@ export default function MintConfigForm({ onSubmit }: MintConfigFormProps) {
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [mintError, setMintError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   const inputClass = (field: keyof MintFormErrors) =>
     `w-full bg-[var(--color-input)] border rounded-xl px-4 py-3 text-[14px] text-white placeholder:text-[#4A5D54] focus:outline-none transition-colors ${
@@ -110,9 +120,14 @@ export default function MintConfigForm({ onSubmit }: MintConfigFormProps) {
     if (Object.keys(errs).length > 0) return;
 
     setSubmitting(true);
+    setMintError(null);
     try {
       await onSubmit?.(form);
       setSubmitted(true);
+      setRetryCount(0);
+    } catch (err) {
+      setMintError(getMintErrorMessage(err));
+      setRetryCount((c) => c + 1);
     } finally {
       setSubmitting(false);
     }
@@ -242,6 +257,21 @@ export default function MintConfigForm({ onSubmit }: MintConfigFormProps) {
         </div>
       </div>
 
+      {/* Error Banner */}
+      {mintError && (
+        <div className="flex items-start gap-3 bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-3">
+          <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+          <div className="flex-1 min-w-0">
+            <p className="text-[13px] text-red-300">{mintError}</p>
+            {retryCount >= 3 && (
+              <p className="text-[11px] text-red-400/70 mt-1">
+                Still failing? Check your wallet connection or try again later.
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Submit */}
       <button
         type="submit"
@@ -253,6 +283,8 @@ export default function MintConfigForm({ onSubmit }: MintConfigFormProps) {
             <Loader2 className="w-4 h-4 animate-spin" />
             Preparing...
           </>
+        ) : mintError ? (
+          "Retry"
         ) : (
           "Save & Continue"
         )}

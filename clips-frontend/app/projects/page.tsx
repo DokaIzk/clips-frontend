@@ -107,11 +107,14 @@ export default function ProjectsPage() {
           </div>
           
           {/* Docked Actions Footer (now truly always visible and grounded) */}
+
+          <SelectionFooter count={selectedIds.length} selectedIds={selectedIds} />
           <SelectionFooter 
             count={selectedIds.length} 
             onMint={handleMint}
             isMinting={isMinting}
           />
+
         </div>
       </main>
     </div>
