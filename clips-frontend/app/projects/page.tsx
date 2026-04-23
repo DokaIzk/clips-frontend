@@ -88,7 +88,7 @@ export default function ProjectsPage() {
           </div>
           
           {/* Docked Actions Footer (now truly always visible and grounded) */}
-          <SelectionFooter count={selectedIds.length} />
+          <SelectionFooter count={selectedIds.length} selectedIds={selectedIds} />
         </div>
       </main>
     </div>

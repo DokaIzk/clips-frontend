@@ -1,23 +1,71 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { 
   Send, 
   Trash2, 
   Download, 
   Zap, 
-  MoveRight 
+  MoveRight,
+  Loader2,
+  AlertCircle,
+  X,
+  RefreshCw
 } from "lucide-react";
+import { MockApi } from "@/app/lib/mockApi";
 
 interface SelectionFooterProps {
   count: number;
+  selectedIds?: string[];
 }
 
-export default function SelectionFooter({ count }: SelectionFooterProps) {
+function getPostErrorMessage(error: unknown): string {
+  const msg = error instanceof Error ? error.message : String(error);
+  if (msg === "NETWORK_ERROR") return "Network error — check your connection and retry.";
+  if (msg === "PLATFORM_AUTH_EXPIRED") return "Platform authorization expired. Reconnect your account and retry.";
+  return "Failed to post clips. Please try again.";
+}
+
+export default function SelectionFooter({ count, selectedIds = [] }: SelectionFooterProps) {
+  const [posting, setPosting] = useState(false);
+  const [postError, setPostError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
+
   if (count === 0) return null;
+
+  async function handlePost() {
+    setPosting(true);
+    setPostError(null);
+    try {
+      await MockApi.postClips(selectedIds);
+    } catch (err) {
+      setPostError(getPostErrorMessage(err));
+      setRetryCount((c) => c + 1);
+    } finally {
+      setPosting(false);
+    }
+  }
 
   return (
     <div className="w-full py-6 animate-in slide-in-from-bottom-5 fade-in duration-500 border-t border-white/5 bg-[#050505]/40 backdrop-blur-md">
+      {/* Error Banner */}
+      {postError && (
+        <div className="flex items-center gap-3 bg-red-500/10 border border-red-500/30 rounded-2xl px-5 py-3 mb-4 mx-1">
+          <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+          <p className="text-[13px] text-red-300 flex-1">{postError}</p>
+          {retryCount >= 3 && (
+            <span className="text-[11px] text-red-400/60 shrink-0">Try reconnecting your platform account.</span>
+          )}
+          <button
+            onClick={() => setPostError(null)}
+            className="text-red-400/60 hover:text-red-300 transition-colors shrink-0"
+            aria-label="Dismiss error"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
       <div className="relative bg-[#0B100E] border border-white/10 rounded-[32px] px-8 py-4 flex flex-col lg:flex-row items-center justify-between gap-6 w-full shadow-2xl">
         {/* Left: Selection Count */}
         <div className="flex items-center gap-4">
@@ -49,9 +97,27 @@ export default function SelectionFooter({ count }: SelectionFooterProps) {
             <span>AUTO-SCHEDULE ON</span>
           </button>
           
-          <button className="flex items-center gap-3 px-10 py-4 rounded-3xl bg-[#00E58F] text-black font-black text-[15px] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_10px_30px_rgba(0,229,143,0.2)]">
-            <span>Post Selected Clips</span>
-            <MoveRight className="w-5 h-5 ml-1" />
+          <button
+            onClick={handlePost}
+            disabled={posting}
+            className="flex items-center gap-3 px-10 py-4 rounded-3xl bg-[#00E58F] text-black font-black text-[15px] transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed disabled:scale-100 shadow-[0_10px_30px_rgba(0,229,143,0.2)]"
+          >
+            {posting ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>Posting...</span>
+              </>
+            ) : postError ? (
+              <>
+                <RefreshCw className="w-5 h-5" />
+                <span>Retry</span>
+              </>
+            ) : (
+              <>
+                <span>Post Selected Clips</span>
+                <MoveRight className="w-5 h-5 ml-1" />
+              </>
+            )}
           </button>
         </div>
       </div>
