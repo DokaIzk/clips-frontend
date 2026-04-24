@@ -30,6 +30,7 @@ export default function AuthForm({ mode = "login" }: AuthFormProps) {
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [resetMessage, setResetMessage] = useState(false);
 
   const handleAuthSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,6 +124,22 @@ export default function AuthForm({ mode = "login" }: AuthFormProps) {
             placeholder="••••••••"
             className="w-full bg-input border border-border text-white focus:border-brand/70 rounded-[12px] px-4 py-3.5 text-[14px] focus:outline-none focus:bg-surface-hover transition-colors"
           />
+          {currentMode === "login" && (
+            <div className="flex justify-end mt-3">
+              <button
+                type="button"
+                onClick={() => setResetMessage(true)}
+                className="text-brand font-medium hover:underline text-[13px]"
+              >
+                Forgot password?
+              </button>
+            </div>
+          )}
+          {resetMessage && currentMode === "login" && (
+            <div className="text-[#8e9895] text-[13px] mt-3 text-right">
+              Password reset coming soon
+            </div>
+          )}
         </div>
 
         {error && <div className="text-error text-[13px] text-center pt-1">{error}</div>}
@@ -139,9 +156,9 @@ export default function AuthForm({ mode = "login" }: AuthFormProps) {
       
       <div className="text-center mt-7 text-[13px] text-muted">
         {currentMode === "login" ? (
-          <>New here? <button type="button" onClick={() => setCurrentMode("signup")} className="text-brand font-medium hover:underline">Sign up free</button></>
+          <>New here? <button type="button" onClick={() => { setCurrentMode("signup"); setResetMessage(false); }} className="text-brand font-medium hover:underline">Sign up free</button></>
         ) : (
-          <>Already have an account? <button type="button" onClick={() => setCurrentMode("login")} className="text-brand font-medium hover:underline">Sign in</button></>
+          <>Already have an account? <button type="button" onClick={() => { setCurrentMode("login"); setResetMessage(false); }} className="text-brand font-medium hover:underline">Sign in</button></>
         )}
       </div>
     </div>
