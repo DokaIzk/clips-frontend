@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Upload, Bell, Menu } from "lucide-react";
 import { useAuth } from "@/components/AuthProvider";
 import WalletConnectButton from "@/components/WalletConnectButton";
@@ -11,7 +11,88 @@ interface HeaderProps {
 
 export default function DashboardHeader({ onMenuClick }: HeaderProps) {
   const { user } = useAuth();
+  const [isUploading, setIsUploading] = useState(false);
   const firstName = user?.name?.split(' ')[0] || user?.profile?.username || "Guest";
+
+  const handleQuickUpload = async () => {
+    if (isUploading) return;
+    
+    setIsUploading(true);
+    
+    try {
+      // Create file input element
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = 'video/*,.mp4,.mov,.avi,.mkv';
+      fileInput.multiple = true;
+      
+      fileInput.onchange = async (event) => {
+        const files = (event.target as HTMLInputElement).files;
+        if (files && files.length > 0) {
+          // Show upload notification
+          showUploadNotification(files.length);
+          
+          // TODO: Implement actual upload logic here
+          console.log('Files selected for upload:', files);
+          
+          // Simulate upload process
+          setTimeout(() => {
+            setIsUploading(false);
+            showUploadCompleteNotification(files.length);
+          }, 2000);
+        } else {
+          setIsUploading(false);
+        }
+      };
+      
+      fileInput.oncancel = () => {
+        setIsUploading(false);
+      };
+      
+      // Trigger file picker
+      fileInput.click();
+    } catch (error) {
+      console.error('Upload error:', error);
+      setIsUploading(false);
+      showErrorNotification();
+    }
+  };
+
+  const showUploadNotification = (fileCount: number) => {
+    // Create toast notification for upload start
+    const toast = document.createElement('div');
+    toast.className = 'fixed top-4 right-4 bg-brand text-black px-6 py-3 rounded-xl font-bold shadow-lg z-50 animate-in slide-in-from-right duration-300';
+    toast.textContent = `Uploading ${fileCount} file${fileCount > 1 ? 's' : ''}...`;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.remove();
+    }, 3000);
+  };
+
+  const showUploadCompleteNotification = (fileCount: number) => {
+    // Create toast notification for upload completion
+    const toast = document.createElement('div');
+    toast.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg z-50 animate-in slide-in-from-right duration-300';
+    toast.textContent = `Successfully uploaded ${fileCount} file${fileCount > 1 ? 's' : ''}!`;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.remove();
+    }, 3000);
+  };
+
+  const showErrorNotification = () => {
+    // Create toast notification for errors
+    const toast = document.createElement('div');
+    toast.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg z-50 animate-in slide-in-from-right duration-300';
+    toast.textContent = 'Upload failed. Please try again.';
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.remove();
+    }, 3000);
+  };
 
   return (
     <header className="flex justify-between items-center py-6 lg:py-8 px-4 sm:px-6 lg:px-10">
@@ -42,9 +123,13 @@ export default function DashboardHeader({ onMenuClick }: HeaderProps) {
           <div className="absolute top-3 right-3 w-2 h-2 bg-brand rounded-full border-2 border-[#111111]" />
         </button>
         
-        <button className="bg-brand hover:bg-brand-hover text-black px-6 py-3 rounded-xl font-bold text-[14px] flex items-center justify-center gap-2.5 transition-all shadow-[0_0_20px_rgba(0,229,143,0.15)] hover:shadow-[0_0_30px_rgba(0,229,143,0.25)] active:scale-[0.97]">
-          <Upload className="w-4.5 h-4.5" />
-          Quick Upload
+        <button 
+          onClick={handleQuickUpload}
+          disabled={isUploading}
+          className={`bg-brand hover:bg-brand-hover text-black px-6 py-3 rounded-xl font-bold text-[14px] flex items-center justify-center gap-2.5 transition-all shadow-[0_0_20px_rgba(0,229,143,0.15)] hover:shadow-[0_0_30px_rgba(0,229,143,0.25)] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100`}
+        >
+          <Upload className={`w-4.5 h-4.5 ${isUploading ? 'animate-spin' : ''}`} />
+          {isUploading ? 'Uploading...' : 'Quick Upload'}
         </button>
       </div>
     </header>
