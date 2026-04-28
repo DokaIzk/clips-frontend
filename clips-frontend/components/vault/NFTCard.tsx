@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, memo } from "react";
+import Image from 'next/image';
 import { 
   ExternalLink,
   Zap,
@@ -94,12 +95,11 @@ const NFTCard = memo(function NFTCard({
             onMouseLeave={() => setIsPlaying(false)}
           />
         ) : (
-          <img 
-            src={thumbnail} 
+          <Image
+            src={thumbnail}
             alt={title}
-            loading="lazy"
-            decoding="async"
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            fill
+            className="object-cover transition-transform duration-700 group-hover:scale-110"
           />
         )}
 
